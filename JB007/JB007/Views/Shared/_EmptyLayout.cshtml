@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Bootstrap framework -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/bootstrap.min.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/metisMenu.min.css")" type="text/css" />
+    <!-- gebo color theme-->
+    <link rel="stylesheet" href="@Url.Content("~/Content/sb-admin-2.css")" type="text/css" id="link_theme" />
+
+    <link rel="stylesheet" href="@Url.Content("~/Content/font-awesome.min.css")" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans" />
+
+    <!-- jQuery -->
+    <script src="@Url.Content("~/Scripts/jquery-1.9.1.min.js")"></script>
+    <script type="text/javascript">
+        if (typeof jQuery == 'undefined') {
+            document.write(unescape("%3Cscript src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+        }
+    </script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+
+</head>
+<body>
+
+
+    <!-- main content -->
+    <div id="contentwrapper">
+
+        @RenderSection("featured", required: false)
+        @RenderBody()
+
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

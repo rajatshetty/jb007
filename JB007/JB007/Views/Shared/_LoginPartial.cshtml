@@ -1,0 +1,6 @@
+﻿@if (Session["User"] == null)
+{
+    Response.Write("<script type='text/javascript'>");
+    Response.Write("window.location = '/Account/Login')</script>");
+    Response.Flush();
+}
