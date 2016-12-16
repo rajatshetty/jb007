@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'c:\Users\mohammed.suhail\documents\visual studio 2015\Projects\JB007\JB007.Entities\JB007Model.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\mohammed.suhail\Source\Repos\Rajat\jb007\JB007\JB007.Entities\JB007Model.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

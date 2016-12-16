@@ -75,18 +75,25 @@
       <DependentUpon>JB007Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegUser.cs">
+      <DependentUpon>JB007Model.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.Config" />
     <EntityDeploy Include="JB007Model.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>JB007Model.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="App.Config" />
     <None Include="JB007Model.edmx.diagram">
       <DependentUpon>JB007Model.edmx</DependentUpon>
     </None>
     <None Include="Packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="JB007Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -98,12 +105,6 @@
       <DependentUpon>JB007Model.edmx</DependentUpon>
       <LastGenOutput>JB007Model.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Service\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

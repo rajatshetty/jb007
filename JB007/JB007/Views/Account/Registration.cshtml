@@ -1,0 +1,150 @@
+﻿@model JB007.Models.Models.RegistrationModel
+@{
+    ViewBag.Title = "Registration";
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<style>
+    body {
+        padding-top: 50px;
+    }
+
+    fieldset {
+        border: thin solid #ccc;
+        border-radius: 4px;
+        padding: 20px;
+        padding-left: 40px;
+        background: #fbfbfb;
+    }
+
+    legend {
+        color: #678;
+    }
+
+    .form-control {
+        width: 95%;
+    }
+
+    label small {
+        color: #678 !important;
+    }
+
+    span.req {
+        color: maroon;
+        font-size: 112%;
+    }
+</style>
+@using (Html.BeginForm())
+{
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 col-md-offset-3">
+                <div class="register-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Account Registration</h3>
+                    </div>
+
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="span10">
+                                <label class="control-label">Create User Name*</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.UserName, new { @placeholder = "Enter First Name", @class = "form-control", @maxlength = "500", data_val = "true", data_val_required = "First Name is required." })                                        <div class="span10" style="color: red;">
+                                        @Html.ValidationMessageFor(m => m.UserName)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="span10">
+                                <label class="control-label">Email*</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.UserEmail, new { @class = "form-control ", Placeholder = "Email", data_val = "true", data_val_required = "Email is required." })
+                                    <div class="span10" style="color:red;">
+                                        @Html.ValidationMessageFor(m => m.UserEmail)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="span10">
+                                <label class="control-label">Phone Number*</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control valid", data_inputmask = "'mask': '(999) 999-9999'", @placeholder = "Phone Number" })
+                                    @Html.ValidationMessageFor(m => m.PhoneNumber)
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="span10">
+                                <label class="control-label">Password*</label>
+                                <div class="controls">
+                                    @Html.PasswordFor(m => m.Password, new { placeholder = "Password", @maxlength = "50", @class = "form-control" })
+                                    <div class="span10" style="color:red;">
+                                        @Html.ValidationMessageFor(m => m.Password)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="span10">
+                                <label class="control-label">Confirm Password*</label>
+                                <div class="controls">
+                                    @Html.PasswordFor(m => m.RetypePassword, new { placeholder = "Confirm Password", @maxlength = "50", @class = "form-control" })
+                                    <div class="span10" style="color:red;">
+                                        @Html.ValidationMessageFor(m => m.RetypePassword)
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="span10">
+                                <label class="control-label">Time Zone</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(modal => modal.TimeZone, (new List<SelectListItem>() {
+                                        new SelectListItem() {Value = "IST",Text = "India Standard Time"},
+                                        new SelectListItem() {Value = "PST",Text = "Pacific Standard Time"},
+                                        new SelectListItem() {Value = "CST",Text = "Central Standard Time"}
+                                         }), "Select Time Zone", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <div class="span10" style="text-align:center;">
+                                <button class="btn btn-md btn-success" type="submit">Create Account</button>
+                                <a href="~/Account/Login">
+                                    <button class="btn btn-md" type="button">Cancel</button>
+                                </a>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="modal-footer">
+                            Already have an account? <a style="cursor: pointer;" href="@Url.Action("Login","Account")">&nbsp;Login!</a>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input').focusin(function () {
+            $("#verification").hide();
+        });
+        @*if(@ViewData["result"]!=null && ViewData["result"]!=0)
+        {
+            alert("Record Saved...");
+        }*@
+
+    });
+</script>

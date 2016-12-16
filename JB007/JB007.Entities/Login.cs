@@ -21,5 +21,7 @@ namespace JB007.Entities
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<bool> Status { get; set; }
+    
+        public virtual RegUser RegUser { get; set; }
     }
 }

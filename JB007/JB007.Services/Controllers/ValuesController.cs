@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace JB007.Service.Controllers
+namespace JB007.Services.Controllers
 {
     [Authorize]
     public class ValuesController : ApiController

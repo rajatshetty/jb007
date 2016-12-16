@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using JB007.Entities;
+using JB007.Models.Models;
 
 namespace JB007
 {
@@ -24,11 +26,11 @@ namespace JB007
                 HttpContext.Current.Session["User"] = HttpContext.Current.User.Identity.Name.ToString();
             }
         }
+
         protected void Application_Error(object sender, EventArgs e)
         {
             Exception exception = Server.GetLastError();
             HttpException httpException = exception as HttpException;
         }
-
     }
 }

@@ -6,6 +6,9 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using AutoMapper;
+using JB007.Entities;
+using JB007.Models.Models;
 
 namespace JB007.Service
 {
@@ -18,6 +21,13 @@ namespace JB007.Service
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            MappingModels();
+        }
+
+        private void MappingModels()
+        {
+            Mapper.Initialize(cfg => cfg.CreateMap<RegistrationModel,RegUser>());
+
         }
     }
 }

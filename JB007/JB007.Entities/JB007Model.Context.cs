@@ -16,7 +16,7 @@ namespace JB007.Entities
     public partial class JB007Entities : DbContext
     {
         public JB007Entities()
-            : base("name=JB007DBContext")
+            : base("name=JB007Entities")
         {
         }
     
@@ -27,5 +27,6 @@ namespace JB007.Entities
     
         public virtual DbSet<AccountType> AccountTypes { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
+        public virtual DbSet<RegUser> RegUsers { get; set; }
     }
 }

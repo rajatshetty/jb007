@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Security;
 using JB007.Models;
-using Newtonsoft.Json;
+using JB007.Models.Models;
 
 namespace JB007.Controllers
 {
@@ -27,27 +27,30 @@ namespace JB007.Controllers
 
         // GET: Account
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnData)
         {
-            if (string.IsNullOrEmpty(returnUrl) && Request.UrlReferrer != null)
-                returnUrl = Server.UrlEncode(Request.UrlReferrer.PathAndQuery);
+            //if (string.IsNullOrEmpty(returnUrl) && Request.UrlReferrer != null)
+            //    returnUrl = Server.UrlEncode(Request.UrlReferrer.PathAndQuery);
 
-            if (Url.IsLocalUrl(returnUrl) && !string.IsNullOrEmpty(returnUrl))
-            {
-                ViewBag.ReturnURL = returnUrl;
-            }
+            //if (Url.IsLocalUrl(returnUrl) && !string.IsNullOrEmpty(returnUrl))
+            //{
+            //    ViewBag.ReturnURL = returnUrl;
+            //}
+            if (string.IsNullOrEmpty(returnData))
+                ViewBag.ReturnData = returnData;
+
             return View();
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login(TransLoginModel login, string ReturnUrl)
+        public ActionResult Login(TransLoginModel login, string returnUrl)
         {
             try
             {
                 string password = string.Empty, username = string.Empty;
                 username = login.objLoginModel.EmailAddress;
-                password = login.objLoginModel.Password;
+                password = Common.Encrypt(login.objLoginModel.Password);
 
                 _response = _client.GetAsync("api/Account/ValidateUser?username=" + username + "&password=" + password).Result;
                 if (_response.IsSuccessStatusCode)
@@ -60,9 +63,9 @@ namespace JB007.Controllers
                         Session["CurrentTenentId"] = CurrentUser.TenantId;
                         Session["UserId"] = CurrentUser.Id;
 
-                        if (Url.IsLocalUrl(ReturnUrl))
+                        if (Url.IsLocalUrl(returnUrl))
                         {
-                            return Redirect(ReturnUrl);
+                            return Redirect(returnUrl);
                         }
                         else
                         {
@@ -92,6 +95,28 @@ namespace JB007.Controllers
             cookie.Expires = DateTime.Now.AddYears(-1);
             Response.Cookies.Add(cookie);
             return RedirectToAction("Login", "Account");
+        }
+        public ActionResult Registration()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult Registration(RegistrationModel register)
+        {
+            if (ModelState.IsValid)
+            {
+                register.CreatedDate = DateTime.Now;
+                register.TenantId = Guid.NewGuid();
+                register.Password = Common.Encrypt(register.Password);
+                _response = _client.PostAsJsonAsync("api/Account/Registration", register).Result;
+                if (_response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Login", "Account", new { ReturnData = "Registration Got Sucesss" });
+                }
+            }
+            return View(register);
         }
     }
 }

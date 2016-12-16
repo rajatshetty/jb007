@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JB007.Service.Models
+namespace JB007.Services.Models
 {
     // Models returned by AccountController actions.
 

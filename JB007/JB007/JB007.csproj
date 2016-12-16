@@ -134,6 +134,21 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.date.extensions.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.date.extensions.min.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.extensions.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.extensions.min.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.min.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.numeric.extensions.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.numeric.extensions.min.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.phone.extensions.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.phone.extensions.min.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.regex.extensions.js" />
+    <Content Include="Scripts\jquery.inputmask\inputmask.regex.extensions.min.js" />
+    <Content Include="Scripts\jquery.inputmask\jquery.inputmask.bundle.js" />
+    <Content Include="Scripts\jquery.inputmask\jquery.inputmask.js" />
+    <Content Include="Scripts\jquery.inputmask\jquery.inputmask.min.js" />
     <Content Include="Scripts\metisMenu.js" />
     <Content Include="Scripts\metisMenu.min.js" />
     <Content Include="Scripts\sb-admin-2.js" />
@@ -150,6 +165,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Common.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -163,6 +179,7 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
+    <Content Include="Views\Account\Registration.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -172,6 +189,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JB007.Entities\JB007.Entities.csproj">
+      <Project>{68A479B3-623A-46DE-BB21-DD0D8070D6A6}</Project>
+      <Name>JB007.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JB007.Models\JB007.Models.csproj">
+      <Project>{b433a4bd-2a74-4e68-b979-d37073d54faa}</Project>
+      <Name>JB007.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JB007.Service\JB007.Service.csproj">
+      <Project>{AD926686-F0C0-4C7D-86D9-BB5EBC6E1D60}</Project>
+      <Name>JB007.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="JB007Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="JB007Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AccountTypes">
           <Key>
             <PropertyRef Name="Id" />
@@ -21,7 +21,6 @@
         <EntityType Name="Logins">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="TenantId" />
           </Key>
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TenantId" Type="uniqueidentifier" Nullable="false" />
@@ -31,12 +30,46 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="Status" Type="bit" />
         </EntityType>
+        <EntityType Name="RegUsers">
+          <Key>
+            <PropertyRef Name="TenantId" />
+            <PropertyRef Name="UserEmail" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenantId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="100" />
+          <Property Name="LoginId" Type="bigint" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="50" />
+          <Property Name="TimeZone" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="UserEmail" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="Password" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK__Logins__4CA06362">
+          <End Role="RegUsers" Type="Self.RegUsers" Multiplicity="0..1" />
+          <End Role="Logins" Type="Self.Logins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegUsers">
+              <PropertyRef Name="UserEmail" />
+              <PropertyRef Name="TenantId" />
+            </Principal>
+            <Dependent Role="Logins">
+              <PropertyRef Name="EmailAddress" />
+              <PropertyRef Name="TenantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="JB007ModelStoreContainer">
           <EntitySet Name="AccountTypes" EntityType="Self.AccountTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegUsers" EntityType="Self.RegUsers" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Logins__4CA06362" Association="Self.FK__Logins__4CA06362">
+            <End Role="RegUsers" EntitySet="RegUsers" />
+            <End Role="Logins" EntitySet="Logins" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="JB007Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -53,10 +86,18 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Status" Type="Boolean" />
         </EntityType>
+        <EntityContainer Name="JB007Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AccountTypes" EntityType="Self.AccountType" />
+          <EntitySet Name="Logins" EntityType="JB007Model.Login" />
+          <EntitySet Name="RegUsers" EntityType="JB007Model.RegUser" />
+          <AssociationSet Name="FK__Logins__4CA06362" Association="JB007Model.FK__Logins__4CA06362">
+            <End Role="RegUser" EntitySet="RegUsers" />
+            <End Role="Login" EntitySet="Logins" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="Login">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="TenantId" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TenantId" Type="Guid" Nullable="false" />
@@ -65,11 +106,39 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="RegUser" Relationship="JB007Model.FK__Logins__4CA06362" FromRole="Login" ToRole="RegUser" />
         </EntityType>
-        <EntityContainer Name="JB007Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AccountTypes" EntityType="Self.AccountType" />
-          <EntitySet Name="Logins" EntityType="Self.Login" />
-        </EntityContainer>
+        <EntityType Name="RegUser">
+          <Key>
+            <PropertyRef Name="TenantId" />
+            <PropertyRef Name="UserEmail" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenantId" Type="Guid" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LoginId" Type="Int64" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TimeZone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="UserEmail" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Logins" Relationship="JB007Model.FK__Logins__4CA06362" FromRole="RegUser" ToRole="Login" />
+        </EntityType>
+        <Association Name="FK__Logins__4CA06362">
+          <End Type="JB007Model.RegUser" Role="RegUser" Multiplicity="0..1" />
+          <End Type="JB007Model.Login" Role="Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegUser">
+              <PropertyRef Name="UserEmail" />
+              <PropertyRef Name="TenantId" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="EmailAddress" />
+              <PropertyRef Name="TenantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -92,13 +161,29 @@
           <EntitySetMapping Name="Logins">
             <EntityTypeMapping TypeName="JB007Model.Login">
               <MappingFragment StoreEntitySet="Logins">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="TenantId" ColumnName="TenantId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="TenantId" ColumnName="TenantId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegUsers">
+            <EntityTypeMapping TypeName="JB007Model.RegUser">
+              <MappingFragment StoreEntitySet="RegUsers">
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="TimeZone" ColumnName="TimeZone" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="LoginId" ColumnName="LoginId" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="TenantId" ColumnName="TenantId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
