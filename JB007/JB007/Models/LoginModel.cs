@@ -14,8 +14,8 @@ namespace JB007.Models
         public string EmailAddress { get; set; }
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         public string Password { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public bool Status { get; set; }
         #endregion
 

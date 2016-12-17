@@ -3,10 +3,14 @@ using System.Configuration;
 using System.Web.Mvc;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 using JB007.Models;
 using JB007.Models.Models;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 
 namespace JB007.Controllers
 {
@@ -55,13 +59,25 @@ namespace JB007.Controllers
                 _response = _client.GetAsync("api/Account/ValidateUser?username=" + username + "&password=" + password).Result;
                 if (_response.IsSuccessStatusCode)
                 {
-                    var CurrentUser = _response.Content.ReadAsAsync<JB007.Models.LoginModel>().Result;
-                    if (CurrentUser != null)
+                    var currentUser = _response.Content.ReadAsAsync<JB007.Models.LoginModel>().Result;
+                    if (currentUser != null)
                     {
-                        FormsAuthentication.SetAuthCookie(login.objLoginModel.EmailAddress, true);
-                        Session["User"] = CurrentUser.EmailAddress;
-                        Session["CurrentTenentId"] = CurrentUser.TenantId;
-                        Session["UserId"] = CurrentUser.Id;
+                        var identity = new ClaimsIdentity(new[] {
+                             new Claim(ClaimTypes.Name,currentUser.EmailAddress),
+                            new Claim(ClaimTypes.Email,currentUser.EmailAddress),
+                            new Claim("TenentId",  currentUser.TenantId.ToString())
+                        },
+                       "ApplicationCookie");                      
+
+                        var ctx = Request.GetOwinContext();
+                        var authManager = ctx.Authentication;
+
+                        authManager.SignIn(identity);
+
+                        //FormsAuthentication.SetAuthCookie(login.objLoginModel.EmailAddress, true);
+                        //Session["User"] = CurrentUser.EmailAddress;
+                        //Session["CurrentTenentId"] = CurrentUser.TenantId;
+                        //Session["UserId"] = CurrentUser.Id;
 
                         if (Url.IsLocalUrl(returnUrl))
                         {
@@ -85,17 +101,22 @@ namespace JB007.Controllers
 
         public ActionResult LogoutMethod()
         {
-            Session.Abandon();
+            //Session.Abandon();
+            //// Delete the authentication ticket and sign out.
+            //FormsAuthentication.SignOut();
+            //// Clear authentication cookie.
+            //HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
+            //cookie.Expires = DateTime.Now.AddYears(-1);
+            //Response.Cookies.Add(cookie);
+            //return RedirectToAction("Login", "Account");
 
-            // Delete the authentication ticket and sign out.
-            FormsAuthentication.SignOut();
+            var ctx = Request.GetOwinContext();
+            var authManager = ctx.Authentication;
 
-            // Clear authentication cookie.
-            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
-            cookie.Expires = DateTime.Now.AddYears(-1);
-            Response.Cookies.Add(cookie);
+            authManager.SignOut("ApplicationCookie");
             return RedirectToAction("Login", "Account");
         }
+        #region Registration
         public ActionResult Registration()
         {
             return View();
@@ -117,6 +138,70 @@ namespace JB007.Controllers
                 }
             }
             return View(register);
+        }
+        #endregion
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            // Request a redirect to the external login provider
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+        }
+
+
+        [AllowAnonymous]
+        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        {
+            var loginInfo = await HttpContext.GetOwinContext().Authentication.GetExternalLoginInfoAsync();
+
+            if (loginInfo == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }else
+            {
+                var identity = new ClaimsIdentity(new[] {
+                             new Claim(ClaimTypes.Name,loginInfo.ExternalIdentity.Name),
+                            new Claim(ClaimTypes.Email,loginInfo.Email)
+                        },
+                      "ApplicationCookie");
+
+            var ctx = Request.GetOwinContext();
+            var authManager = ctx.Authentication;
+
+            authManager.SignIn(identity);
+
+            return RedirectToAction("Index", "Home");
+            }
+        }
+
+        // Used for XSRF protection when adding external logins
+        private const string XsrfKey = "XsrfId";
+        internal class ChallengeResult : HttpUnauthorizedResult
+        {
+            public ChallengeResult(string provider, string redirectUri)
+                : this(provider, redirectUri, null)
+            {
+            }
+
+            public ChallengeResult(string provider, string redirectUri, string userId)
+            {
+                LoginProvider = provider;
+                RedirectUri = redirectUri;
+                UserId = userId;
+            }
+
+            public string LoginProvider { get; set; }
+            public string RedirectUri { get; set; }
+            public string UserId { get; set; }
+            public override void ExecuteResult(ControllerContext context)
+            {
+                var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
+                if (UserId != null)
+                {
+                    properties.Dictionary[XsrfKey] = UserId;
+                }
+                context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
+            }
         }
     }
 }

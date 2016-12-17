@@ -21,7 +21,7 @@ namespace JB007.Service.Controllers
             try
             {
                 var CurrentUser = (from cu in _dbcontext.Logins
-                    where cu.EmailAddress == username && cu.Password == password && cu.Status == true
+                    where cu.EmailAddress == username && cu.Password == password 
                     select
                     new
                     {
